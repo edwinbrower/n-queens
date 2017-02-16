@@ -33,41 +33,67 @@ window.factorial = function(n) {
   }
 };
 
-window.findNRooksSolution = function(n) {
-  var solution = []; //fixme
-  var placedRooks = 0;
-  for (var i = 0; i < n; i++) {
-    solution.push([]);
-    for (var j = 0; j < n; j++) {
-      solution[i].push(0);
-    }
+window.boardToMatrix = function(board) {
+  var result = [];
+  for (var i = 0; i < board.get('n'); i++) {
+    result.push(board.get(i));
   }
-  //console.log(solution);
+  return result;
+};
 
+window.findNRooksSolution = function(n) {
+
+  var initBoard = new Board({n: n});
+  var solutionBoard;
   // recursive function
-  var searchForPlace = function(board, round) {
+  var NRooksSolutionCount = 0;
+  var searchForPlace = function(board, round, rooks) {
     // base case
+    var placedRooks = rooks;
     for (var i = 0; i < n; i++) {
       for (var j = 0; j < n; j++) {
-        if (!this.hasAnyRooksConflicts) {
-          board[i][j] = 1;
-          placedRooks++;
-          if (round > 1) {
-            searchForPlace(board, round - 1);
-          }
+        if (board.get(i)[j] === 1) {
+          continue;
         }
+        var matrix = boardToMatrix(board);
+        //var workingBoard = new Board({n: n});
+        //workingBoard = board;
+        var workingBoard = new Board (matrix);
+
+        workingBoard.get(i)[j] = 1;
+        placedRooks++;
+        if (workingBoard.hasAnyRooksConflicts()) {
+          workingBoard.get(i)[j] = 0;
+          placedRooks--;
+          continue;
+        }
+
+        // recursive case
+        if (round > 1) {
+          searchForPlace(workingBoard, round - 1, placedRooks);
+        } else if (placedRooks === n) {
+          NRooksSolutionCount++;
+          solutionBoard = workingBoard;
+          //board = new Board({n: n});
+          //return board;
+        }//  else {
+        //   board = new Board({n: n});
+        // }
+        //board.get(i)[j] = 0;
       }
     }
-    if (placedRooks === n) {
-      window.NRooksSolutionCount++;
-      return board;
-    }
-    // recursion case
-  /*  
-
-  */
   };
-  solution = searchForPlace(solution, n);
+  searchForPlace(initBoard, n, 0);
+
+  // var solution = [];
+  // for (var i = 0; i < n; i++) {
+  //   //debugger;
+  //   solution.push(solutionBoard.get(i));
+  // }
+
+  var solution = boardToMatrix(solutionBoard);
+
+
 
   // if (placedRooks < 4)  NOPE
   // if (placedRooks === 4) WOOT! also count increases and stop
@@ -95,6 +121,7 @@ window.findNRooksSolution = function(n) {
 
   this.NRooksSolutionCount++;
 */
+  window.NRooksSolutionCount = NRooksSolutionCount;
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
@@ -104,7 +131,7 @@ window.countNRooksSolutions = function(n) {
   window.findNRooksSolution(n);
   var solutionCount = window.NRooksSolutionCount; //fixme
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount / this.factorial(n);
+  return solutionCount / (this.factorial(n));
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
