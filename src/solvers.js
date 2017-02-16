@@ -29,96 +29,109 @@
 window.NRooksSolutionCount = 0;
 window.NQueensSoltionCount = 0;
 
-window.factorial = function(n) {
-  if (n > 0) {
-    return n * factorial(n - 1);
-  } else {
-    if (n === 0) {
-      return 1;
-    }
-  }
-};
+// window.factorial = function(n) {
+//   if (n > 0) {
+//     return n * factorial(n - 1);
+//   } else {
+//     if (n === 0) {
+//       return 1;
+//     }
+//   }
+// };
 
-window.boardToMatrix = function(board) {
-  var result = [];
-  for (var i = 0; i < board.get('n'); i++) {
-    result.push(board.get(i));
-  }
-  return result;
-};
+// window.boardToMatrix = function(board) {
+//   var result = [];
+//   for (var i = 0; i < board.get('n'); i++) {
+//     result.push(board.get(i));
+//   }
+//   return result;
+// };
 
 window.findNRooksSolution = function(n) {
 
   var initBoard = new Board({n: n});
-  var solutionBoard;
+  //var solutionBoard;
+  var solutionBoards = [];
   // recursive function
   var NRooksSolutionCount = 0;
-  var searchForPlace = function(board, round, rooks) {
+  var searchForPlace = function(board, rooks) {
     // base case
-    debugger;
-    var placedRooks = rooks;
+    //debugger;
+    //var placedRooks = rooks;
 
     for (var i = 0; i < n; i++) {
       // var rowMatrix = boardToMatrix(board);
       // //var workingBoard = new Board({n: n});
       // //workingBoard = board;
       // var rowBoard = new Board(rowMatrix);
-        
-      for (var j = 0; j < n; j++) {
+
+
+      // var rowBoard = new Board(board.rows());
+      // searchForPlace(rowBoard, rooks);
+      debugger;
+      board.togglePiece(rooks, i);
+      rooks++;
+      //for (var j = 0; j < n; j++) {
         // var columnBoard = boardToMatrix(rowBoard);
         // //var workingBoard = new Board({n: n});
         // //workingBoard = board;
         // var workingBoard = new Board(columnBoard);
 
-        var workingBoard = board;
-        if (workingBoard.get(i)[j] === 1) {
-          continue;
-        }
-        workingBoard.get(i)[j] = 1;
-        placedRooks++;
-        if (workingBoard.hasAnyRooksConflicts()) {
-          workingBoard.get(i)[j] = 0;
-          placedRooks--;
-          continue;
-        }
-
-        //recursive case
-        if (round > 1) {
-          var matrix = boardToMatrix(workingBoard);
-          var temp = new Board(matrix);
-          var tempRound = round;
-          var tempPlacedRooks = placedRooks--;
-          temp.get(i)[j] = 0;
-          searchForPlace(workingBoard, round - 1, placedRooks);
-          searchForPlace(temp, tempRound, tempPlacedRooks);
-
-          // workingBoard.get(i)[j] = 0;
-          // placedRooks--;
-          // searchForPlace(temp, round, placedRooks);
-        } 
-        // if (round === 1) {
-        //   searchForPlace(workingBoard, round - 1, placedRooks);
+        // var workingBoard = board;
+        // if (workingBoard.get(i)[j] === 1) {
+        //   continue;
         // }
-        if (placedRooks === n) {
-          NRooksSolutionCount++;
-          solutionBoard = workingBoard;
-          // var matrix = boardToMatrix(workingBoard);
-          // var temp = new Board(matrix);
-          // var tempRound = round;
-          // var tempPlacedRooks = placedRooks--;
-
-          // searchForPlace(temp, tempRound, tempPlacedRooks);
-
-          //board = new Board({n: n});
-          //return board;
-        }//  else {
-        //   board = new Board({n: n});
-        // }
-        //board.get(i)[j] = 0;
+      if (board.hasAnyRooksConflicts()) {
+        rooks--;
+        board.togglePiece(rooks, i);
+        continue;
       }
+
+      //recursive case
+      if (rooks < n) {
+        // var matrix = boardToMatrix(workingBoard);
+        // var temp = new Board(matrix);
+        // var tempRound = round;
+        // var tempPlacedRooks = placedRooks--;
+        // temp.get(i)[j] = 0;
+        // var newBoard = new Board(board.rows());
+        searchForPlace(board, rooks);
+        // var newRooks = rooks--;
+        // newBoard.togglePiece(rooks, i);
+        // searchForPlace(newBoard, rooks);
+        // searchForPlace(temp, tempRound, tempPlacedRooks);
+
+        // workingBoard.get(i)[j] = 0;
+        // placedRooks--;
+        // searchForPlace(temp, round, placedRooks);
+      } 
+      // if (round === 1) {
+      //   searchForPlace(workingBoard, round - 1, placedRooks);
+      // }
+      if (rooks === n) {
+
+        NRooksSolutionCount++;
+        //solutionBoard = workingBoard;
+        solutionBoards.push(board.rows());
+        // board.togglePiece(rooks, i);
+        // rooks--;
+        // var matrix = boardToMatrix(workingBoard);
+        // var temp = new Board(matrix);
+        // var tempRound = round;
+        // var tempPlacedRooks = placedRooks--;
+
+        // searchForPlace(temp, tempRound, tempPlacedRooks);
+
+        //board = new Board({n: n});
+        //return board;
+      }//  else {
+      //   board = new Board({n: n});
+      // }
+      //board.get(i)[j] = 0;
     }
+  //}
   };
-  searchForPlace(initBoard, n, 0);
+  searchForPlace(initBoard, 0);
 
   // var solution = [];
   // for (var i = 0; i < n; i++) {
@@ -126,8 +139,8 @@ window.findNRooksSolution = function(n) {
   //   solution.push(solutionBoard.get(i));
   // }
 
-  var solution = boardToMatrix(solutionBoard);
-
+  //var solution = boardToMatrix(solutionBoard);
+  var solution = solutionBoards[0];
 
 
   // if (placedRooks < 4)  NOPE
