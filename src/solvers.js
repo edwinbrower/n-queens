@@ -19,6 +19,12 @@
   // whether we should count (1,2) and (2,1) separately
   // we think : return solutionFound / (n!);
 
+// should never have duplicates
+// We need to call the recursive function twice so that it makes a second instance
+// make sure toggle is correct
+// then work on time complexity
+
+
 //////////////////////////////////////////////////////////////////////////////
 window.NRooksSolutionCount = 0;
 window.NQueensSoltionCount = 0;
@@ -78,7 +84,17 @@ window.findNRooksSolution = function(n) {
 
         //recursive case
         if (round > 1) {
+          var matrix = boardToMatrix(workingBoard);
+          var temp = new Board(matrix);
+          var tempRound = round;
+          var tempPlacedRooks = placedRooks--;
+          temp.get(i)[j] = 0;
           searchForPlace(workingBoard, round - 1, placedRooks);
+          searchForPlace(temp, tempRound, tempPlacedRooks);
+
+          // workingBoard.get(i)[j] = 0;
+          // placedRooks--;
+          // searchForPlace(temp, round, placedRooks);
         } 
         // if (round === 1) {
         //   searchForPlace(workingBoard, round - 1, placedRooks);
@@ -86,6 +102,13 @@ window.findNRooksSolution = function(n) {
         if (placedRooks === n) {
           NRooksSolutionCount++;
           solutionBoard = workingBoard;
+          // var matrix = boardToMatrix(workingBoard);
+          // var temp = new Board(matrix);
+          // var tempRound = round;
+          // var tempPlacedRooks = placedRooks--;
+
+          // searchForPlace(temp, tempRound, tempPlacedRooks);
+
           //board = new Board({n: n});
           //return board;
         }//  else {
@@ -143,7 +166,8 @@ window.countNRooksSolutions = function(n) {
   window.findNRooksSolution(n);
   var solutionCount = window.NRooksSolutionCount; //fixme
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount / (this.factorial(n));
+  // return solutionCount / (this.factorial(n));
+  return solutionCount;
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
@@ -159,7 +183,8 @@ window.countNQueensSolutions = function(n) {
   var solutionCount = undefined; //fixme
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
-  return solutionCount / this.factorial(n);
+  // return solutionCount / this.factorial(n);
+  return solutionCount;
 };
 
 
