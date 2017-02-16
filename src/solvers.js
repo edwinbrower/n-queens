@@ -49,17 +49,25 @@ window.findNRooksSolution = function(n) {
   var NRooksSolutionCount = 0;
   var searchForPlace = function(board, round, rooks) {
     // base case
+    debugger;
     var placedRooks = rooks;
+
     for (var i = 0; i < n; i++) {
+      // var rowMatrix = boardToMatrix(board);
+      // //var workingBoard = new Board({n: n});
+      // //workingBoard = board;
+      // var rowBoard = new Board(rowMatrix);
+        
       for (var j = 0; j < n; j++) {
-        if (board.get(i)[j] === 1) {
+        // var columnBoard = boardToMatrix(rowBoard);
+        // //var workingBoard = new Board({n: n});
+        // //workingBoard = board;
+        // var workingBoard = new Board(columnBoard);
+
+        var workingBoard = board;
+        if (workingBoard.get(i)[j] === 1) {
           continue;
         }
-        var matrix = boardToMatrix(board);
-        //var workingBoard = new Board({n: n});
-        //workingBoard = board;
-        var workingBoard = new Board (matrix);
-
         workingBoard.get(i)[j] = 1;
         placedRooks++;
         if (workingBoard.hasAnyRooksConflicts()) {
@@ -68,10 +76,14 @@ window.findNRooksSolution = function(n) {
           continue;
         }
 
-        // recursive case
+        //recursive case
         if (round > 1) {
           searchForPlace(workingBoard, round - 1, placedRooks);
-        } else if (placedRooks === n) {
+        } 
+        // if (round === 1) {
+        //   searchForPlace(workingBoard, round - 1, placedRooks);
+        // }
+        if (placedRooks === n) {
           NRooksSolutionCount++;
           solutionBoard = workingBoard;
           //board = new Board({n: n});
