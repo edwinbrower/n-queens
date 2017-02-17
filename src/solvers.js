@@ -68,7 +68,13 @@ window.findNRooksSolution = function(n) {
 
       // var rowBoard = new Board(board.rows());
       // searchForPlace(rowBoard, rooks);
-      debugger;
+      //debugger;
+
+
+
+ 
+
+
       board.togglePiece(rooks, i);
       rooks++;
       //for (var j = 0; j < n; j++) {
@@ -95,7 +101,15 @@ window.findNRooksSolution = function(n) {
         // var tempPlacedRooks = placedRooks--;
         // temp.get(i)[j] = 0;
         // var newBoard = new Board(board.rows());
+        // console.log('Before Recursion! :', board.rows());
         searchForPlace(board, rooks);
+        // rooks--;
+
+        // console.log('This is i we are looking for: ', i);
+        // console.log('This is rooks we are looking for: ', rooks);
+        // console.log('After Recursion! :', board.rows());
+        rooks--;
+        board.togglePiece(rooks, i);
         // var newRooks = rooks--;
         // newBoard.togglePiece(rooks, i);
         // searchForPlace(newBoard, rooks);
@@ -109,12 +123,22 @@ window.findNRooksSolution = function(n) {
       //   searchForPlace(workingBoard, round - 1, placedRooks);
       // }
       if (rooks === n) {
-
         NRooksSolutionCount++;
         //solutionBoard = workingBoard;
-        solutionBoards.push(board.rows());
-        // board.togglePiece(rooks, i);
-        // rooks--;
+        // console.log('BOARD ROWS :', board.rows());
+        //var copy = board.rows().slice();
+        var tempMatrix1 = board.rows();
+        var tempBoard = new Board({n: n});
+        var tempMatrix2 = tempBoard.rows();
+        for (var m = 0; m < n; m++) {
+          for (var l = 0; l < n; l++) {
+            tempMatrix2[m][l] = tempMatrix1[m][l];
+          }
+        }
+        console.log('Temp Matrix :', tempMatrix2);
+        solutionBoards.push(tempMatrix2);
+        rooks--;
+        board.togglePiece(rooks, i);
         // var matrix = boardToMatrix(workingBoard);
         // var temp = new Board(matrix);
         // var tempRound = round;
