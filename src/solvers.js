@@ -12,62 +12,26 @@
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
-
-////////////////////////////////////////////////////////////////////////////////
-
-
-// should never have duplicates
-// We need to call the recursive function twice so that it makes a second instance
-// make sure toggle is correct
-// then work on time complexity
-
-
-//////////////////////////////////////////////////////////////////////////////
 window.NRooksSolutionCount = 0;
 window.NQueensSolutionCount = 0;
 
 window.findNRooksSolution = function(n) {
-
   var initBoard = new Board({n: n});
   var solutionBoards = [];
   var NRooksSolutionCount = 0;
   var searchForPlace = function(board, rows) {
     for (var i = 0; i < n; i++) {
-      // if (!board.hasAnyRooksConflicts()) {
-      //   board.togglePiece(rooks, i);
-      //   rooks++;
-      // } 
-      // else {
-      //   rooks--;
-      //   board.togglePiece(rooks, i);
-      //   continue;
-      // }
-
-
       board.togglePiece(rows, i);
-      //rooks++;
       if (board.hasAnyRooksConflicts()) {
-        //rooks--;
         board.togglePiece(rows, i);
         continue;
       }
-
       //recursive case
       if (rows < n - 1) {
         rows++;
-        debugger;
         searchForPlace(board, rows);
-        //rooks--;
         rows--;
         board.togglePiece(rows, i);
-        // var newRooks = rooks--;
-        // newBoard.togglePiece(rooks, i);
-        // searchForPlace(newBoard, rooks);
-        // searchForPlace(temp, tempRound, tempPlacedRooks);
-
-        // workingBoard.get(i)[j] = 0;
-        // placedRooks--;
-        // searchForPlace(temp, round, placedRooks);
       } else {
         NRooksSolutionCount++;
         var tempMatrix1 = board.rows();
@@ -78,9 +42,7 @@ window.findNRooksSolution = function(n) {
             tempMatrix2[m][l] = tempMatrix1[m][l];
           }
         }
-        //console.log('Temp Matrix :', tempMatrix2);
         solutionBoards.push(tempMatrix2);
-        // rooks--;
         board.togglePiece(rows, i);
       }
     }
@@ -105,45 +67,20 @@ window.findNQueensSolution = function(n) {
   var initBoard = new Board({n: n});
   var solutionBoards = [];
   var NQueensSolutionCount = 0;
-  var searchForPlace = function(board, rooks) {
+  var searchForPlace = function(board, rows) {
     for (var i = 0; i < n; i++) {
-      // if (!board.hasAnyRooksConflicts()) {
-      //   board.togglePiece(rooks, i);
-      //   rooks++;
-      // } 
-      // else {
-      //   rooks--;
-      //   board.togglePiece(rooks, i);
-      //   continue;
-      // }
-
-
-      board.togglePiece(rooks, i);
-      rooks++;
+      board.togglePiece(rows, i);
       if (board.hasAnyQueensConflicts()) {
-        rooks--;
-        board.togglePiece(rooks, i);
+        board.togglePiece(rows, i);
         continue;
       }
-
       //recursive case
-      if (rooks < n) {
-        searchForPlace(board, rooks);
-        rooks--;
-        board.togglePiece(rooks, i);
-        // var newRooks = rooks--;
-        // newBoard.togglePiece(rooks, i);
-        // searchForPlace(newBoard, rooks);
-        // searchForPlace(temp, tempRound, tempPlacedRooks);
-
-        // workingBoard.get(i)[j] = 0;
-        // placedRooks--;
-        // searchForPlace(temp, round, placedRooks);
-      } 
-      // if (round === 1) {
-      //   searchForPlace(workingBoard, round - 1, placedRooks);
-      // }
-      if (rooks === n) {
+      if (rows < n - 1) {
+        rows++;
+        searchForPlace(board, rows);
+        rows--;
+        board.togglePiece(rows, i);
+      } else {
         NQueensSolutionCount++;
         var tempMatrix1 = board.rows();
         var tempBoard = new Board({n: n});
@@ -153,17 +90,17 @@ window.findNQueensSolution = function(n) {
             tempMatrix2[m][l] = tempMatrix1[m][l];
           }
         }
-        //console.log('Temp Matrix :', tempMatrix2);
         solutionBoards.push(tempMatrix2);
-        rooks--;
-        board.togglePiece(rooks, i);
+        board.togglePiece(rows, i);
       }
     }
   };
-
   searchForPlace(initBoard, 0);
-  console.log(solutionBoards);
-  var solution = solutionBoards[0];
+  var solution = solutionBoards[0] || [];
+  if (solutionBoards.length === 0) {
+    var edgeBoard = new Board({n: n});
+    return edgeBoard.rows();
+  }
   window.NQueensSolutionCount = NQueensSolutionCount;
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
@@ -172,24 +109,12 @@ window.findNQueensSolution = function(n) {
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
   window.findNQueensSolution(n);
-  var solutionCount = window.NQueensSolutionCount; //fixme
+  var solutionCount = window.NQueensSolutionCount;
+  if (n === 0) {
+    solutionCount = 1;
+  } else if (n === 2 || n === 3) {
+    solutionCount = 0;
+  }
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

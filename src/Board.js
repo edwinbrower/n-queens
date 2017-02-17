@@ -93,7 +93,7 @@
       if (sum > 1) {
         return true;
       }
-      return false; // fixme
+      return false;
     },
 
     // test if any rows on this board contain conflicts
