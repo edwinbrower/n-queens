@@ -31,7 +31,7 @@ window.findNRooksSolution = function(n) {
   var initBoard = new Board({n: n});
   var solutionBoards = [];
   var NRooksSolutionCount = 0;
-  var searchForPlace = function(board, rooks) {
+  var searchForPlace = function(board, rows) {
     for (var i = 0; i < n; i++) {
       // if (!board.hasAnyRooksConflicts()) {
       //   board.togglePiece(rooks, i);
@@ -44,19 +44,22 @@ window.findNRooksSolution = function(n) {
       // }
 
 
-      board.togglePiece(rooks, i);
-      rooks++;
+      board.togglePiece(rows, i);
+      //rooks++;
       if (board.hasAnyRooksConflicts()) {
-        rooks--;
-        board.togglePiece(rooks, i);
+        //rooks--;
+        board.togglePiece(rows, i);
         continue;
       }
 
       //recursive case
-      if (rooks < n) {
-        searchForPlace(board, rooks);
-        rooks--;
-        board.togglePiece(rooks, i);
+      if (rows < n - 1) {
+        rows++;
+        debugger;
+        searchForPlace(board, rows);
+        //rooks--;
+        rows--;
+        board.togglePiece(rows, i);
         // var newRooks = rooks--;
         // newBoard.togglePiece(rooks, i);
         // searchForPlace(newBoard, rooks);
@@ -65,11 +68,7 @@ window.findNRooksSolution = function(n) {
         // workingBoard.get(i)[j] = 0;
         // placedRooks--;
         // searchForPlace(temp, round, placedRooks);
-      } 
-      // if (round === 1) {
-      //   searchForPlace(workingBoard, round - 1, placedRooks);
-      // }
-      if (rooks === n) {
+      } else {
         NRooksSolutionCount++;
         var tempMatrix1 = board.rows();
         var tempBoard = new Board({n: n});
@@ -81,8 +80,8 @@ window.findNRooksSolution = function(n) {
         }
         //console.log('Temp Matrix :', tempMatrix2);
         solutionBoards.push(tempMatrix2);
-        rooks--;
-        board.togglePiece(rooks, i);
+        // rooks--;
+        board.togglePiece(rows, i);
       }
     }
   };
